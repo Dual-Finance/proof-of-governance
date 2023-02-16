@@ -30,16 +30,19 @@ pub struct Verify<'info> {
 }
 
 pub fn handle_verify(ctx: Context<Verify>, amount: u64, _verification_data: Vec<u8>) -> Result<()> {
+    let gov_key: Pubkey = Pubkey::from_str("GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw").unwrap();
+
+    // Verify the amount requested is correct.
     assert_eq!(amount, ctx.accounts.verifier_state.amount_per_voter);
 
     let proposal: ProposalV2 = get_proposal_data_for_governance(
-        &Pubkey::from_str("GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw").unwrap(),
+        &gov_key,
         &ctx.accounts.proposal.to_account_info(),
         &ctx.accounts.verifier_state.governance,
     )?;
 
     let vote_record: VoteRecordV2 = get_vote_record_data(
-        &Pubkey::from_str("GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw").unwrap(),
+        &gov_key,
         &ctx.accounts.vote_record.to_account_info(),
     )?;
 
@@ -62,7 +65,7 @@ pub fn handle_verify(ctx: Context<Verify>, amount: u64, _verification_data: Vec<
     // proposal, it verified the program.
     // https://github.com/solana-labs/solana-program-library/blob/ea891fe0df9fd60239de9d8006daab17f58e039b/governance/program/src/state/proposal.rs#L957
     let expected_vote_record_address = get_vote_record_address(
-        &Pubkey::from_str("GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw").unwrap(),
+        &gov_key,
         &ctx.accounts.proposal.key(),
         &vote_record.governing_token_owner.key(),
     );

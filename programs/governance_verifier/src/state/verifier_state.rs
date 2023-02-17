@@ -1,5 +1,4 @@
 use anchor_lang::prelude::*;
-use solana_program::clock::UnixTimestamp;
 
 // Necessary fields for doing a verification. The requirement for proof will be
 // any VoteRecordV2 and corresponding Proposal that match the governance and the
@@ -11,9 +10,11 @@ pub struct VerifierState {
     // which is used for this verifier.
     pub governance: Pubkey,
 
-    // The verifier will check that the given Proposal is in the eligibility period.
-    pub eligibility_start: UnixTimestamp,
-    pub eligibility_end: UnixTimestamp,
+    // The verifier will check that the given Proposal is in the eligibility
+    // period. Uses i64 instead of UnixTimestamp alias so anchor idl can parse.
+    // https://github.com/coral-xyz/anchor/issues/1632
+    pub eligibility_start: i64,
+    pub eligibility_end: i64,
 
     // Amount of tokens to give to each eligible recipient.
     pub amount_per_voter: u64,

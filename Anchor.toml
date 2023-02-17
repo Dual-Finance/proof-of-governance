@@ -5,7 +5,7 @@ skip-lint = false
 governance_verifier = "ATCsJvzSbHaJj3a9uKTRHSoD8ZmWPfeC3sYxzcJJHTM5"
 
 [provider]
-cluster = "mainnet"
+cluster = "localnet"
 wallet = "/Users/brittcyr/.config/solana/id.json"
 
 [scripts]

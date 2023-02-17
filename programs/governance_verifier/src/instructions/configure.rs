@@ -19,7 +19,12 @@ pub struct Configure<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn handle_configure(ctx: Context<Configure>, amount_per_voter: u64, eligibility_start: i64, eligibility_end: i64) -> Result<()> {
+pub fn handle_configure(
+    ctx: Context<Configure>,
+    amount_per_voter: u64,
+    eligibility_start: i64,
+    eligibility_end: i64,
+) -> Result<()> {
     ctx.accounts.state.eligibility_start = eligibility_start;
     ctx.accounts.state.eligibility_end = eligibility_end;
     ctx.accounts.state.governance = ctx.accounts.governance.key();

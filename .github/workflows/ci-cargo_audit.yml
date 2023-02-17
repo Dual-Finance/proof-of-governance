@@ -1,0 +1,34 @@
+name: Rust Cargo Audit
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - programs/**
+  pull_request:
+    branches:
+      - master
+    paths:
+      - programs/**
+
+  workflow_dispatch:
+
+jobs:
+  Cargo-audit:
+    name: Cargo Vulnerability Scanner
+    runs-on: ubuntu-latest
+    steps:
+      # Check out GitHub repo
+      - uses: actions/checkout@v2
+      
+      # Install cargo audit
+      - name: Install Cargo Audit
+        uses: actions-rs/install@v0.1
+        with:
+          crate: cargo-audit
+          version: latest
+          
+      # Run cargo audit using args from .cargo/audit.toml (ignores, etc.)
+      - name: Run Cargo Audit
+        run: cargo audit -c always

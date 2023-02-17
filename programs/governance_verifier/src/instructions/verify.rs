@@ -32,6 +32,15 @@ pub struct Verify<'info> {
     /// CHECK: VoteRecordV2 is not an anchor account so it has to be checked in the handler
     pub vote_record: UncheckedAccount<'info>,
 
+    #[account(
+        init,
+        seeds = ["Receipt".as_ref(), verifier_state.key().as_ref(), vote_record.key().as_ref()],
+        bump,
+        space = 8 + std::mem::size_of::<Receipt>(),
+        payer = authority
+    )]
+    pub receipt: Account<'info, Receipt>,
+
     // TODO: Include a receipt so the same VoteRecordV2 cannot be reused.
     pub system_program: Program<'info, System>,
 }
@@ -101,6 +110,9 @@ pub fn handle_verify(ctx: Context<Verify>, amount: u64, _verification_data: Vec<
     // This makes sure that the vote record provided is a real vote record and
     // not just a faked account.
     assert_eq!(ctx.accounts.vote_record.key(), expected_vote_record_address);
+
+    ctx.accounts.receipt.state = ctx.accounts.verifier_state.key();
+    ctx.accounts.receipt.vote_record = ctx.accounts.vote_record.key();
 
     Ok(())
 }

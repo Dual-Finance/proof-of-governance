@@ -41,7 +41,6 @@ pub struct Verify<'info> {
     )]
     pub receipt: Account<'info, Receipt>,
 
-    // TODO: Include a receipt so the same VoteRecordV2 cannot be reused.
     pub system_program: Program<'info, System>,
 }
 

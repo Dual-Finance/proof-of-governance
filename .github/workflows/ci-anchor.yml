@@ -1,0 +1,37 @@
+name: Anchor test
+on:
+  push:
+    branches: master
+  workflow_dispatch:
+jobs:
+  anchor_test:
+    runs-on: ubuntu-latest
+    container: projectserum/build:v0.26.0
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: List rustup toolchains
+        run: rustup toolchain list
+      - name: Set default toolchain
+        run: rustup default stable
+      - name: List rustup toolchains
+        run: rustup toolchain list
+      - name: Generate new keygen
+        run: solana-keygen new --no-bip39-passphrase 
+      - name: Check solana config
+        run: solana config get
+      - name: Install yarn dependencies
+        run: yarn install
+      - name: Solana version
+        run: solana --version
+      - name: Upgrade solana
+        run: sh -c "$(curl -sSfL https://release.solana.com/v1.14.2/install)"
+      - name: Update path
+        run: echo "/github/home/.local/share/solana/install/active_release/bin:$PATH" >> $GITHUB_PATH
+      - name: Echo path
+        run: echo $PATH
+      - name: Solana version
+        run: solana --version
+      - name: Run tests
+        run: anchor test

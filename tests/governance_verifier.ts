@@ -4,6 +4,7 @@ import { PublicKey } from '@solana/web3.js';
 import assert from 'assert';
 import { GovernanceVerifier } from '../target/types/governance_verifier';
 import { createMint, createTokenAccount } from './utils/utils';
+
 const crypto = require('crypto');
 
 describe('anchor_verifier', () => {
@@ -38,7 +39,7 @@ describe('anchor_verifier', () => {
       anchor.web3.PublicKey.findProgramAddressSync(
         [seed],
         program.programId,
-    ));
+      ));
 
     const configureTx = await program.methods
       .configure(seed, amount, eligibilityStart, eligibilityEnd)
@@ -92,7 +93,7 @@ describe('anchor_verifier', () => {
       anchor.web3.PublicKey.findProgramAddressSync(
         [seed],
         program.programId,
-    ));
+      ));
 
     const configureTx = await program.methods
       .configure(seed, amount, eligibilityStart, eligibilityStart)
@@ -141,7 +142,7 @@ describe('anchor_verifier', () => {
       anchor.web3.PublicKey.findProgramAddressSync(
         [seed],
         program.programId,
-    ));
+      ));
 
     const configureTx = await program.methods
       .configure(seed, amount, eligibilityStart, eligibilityEnd)
@@ -195,7 +196,7 @@ describe('anchor_verifier', () => {
       anchor.web3.PublicKey.findProgramAddressSync(
         [seed],
         program.programId,
-    ));
+      ));
 
     const configureTx = await program.methods
       .configure(seed, amount, eligibilityStart, eligibilityEnd)
@@ -244,7 +245,7 @@ describe('anchor_verifier', () => {
       anchor.web3.PublicKey.findProgramAddressSync(
         [seed],
         program.programId,
-    ));
+      ));
 
     const configureTx = await program.methods
       .configure(seed, amount, eligibilityStart, eligibilityEnd)

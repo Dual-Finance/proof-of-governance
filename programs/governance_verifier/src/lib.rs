@@ -16,11 +16,18 @@ pub mod governance_verifier {
     /// The verifier knowing which governance and what proposal to verify.
     pub fn configure(
         ctx: Context<Configure>,
+        seed: [u8; 64],
         amount_per_voter: u64,
         eligibility_start: i64,
         eligibility_end: i64,
     ) -> Result<()> {
-        handle_configure(ctx, amount_per_voter, eligibility_start, eligibility_end)
+        handle_configure(
+            ctx,
+            seed,
+            amount_per_voter,
+            eligibility_start,
+            eligibility_end,
+        )
     }
 
     /// The verifier knowing which governance and what proposal to verify.

@@ -5,6 +5,8 @@ import assert from 'assert';
 import { GovernanceVerifier } from '../target/types/governance_verifier';
 import { createMint, createTokenAccount } from './utils/utils';
 
+const crypto = require('crypto');
+
 describe('anchor_verifier', () => {
   anchor.setProvider(anchor.AnchorProvider.env());
 
@@ -32,16 +34,21 @@ describe('anchor_verifier', () => {
   let recipientTokenAccount: PublicKey;
 
   it('Governance Verify', async () => {
-    const stateKeypair = anchor.web3.Keypair.generate();
+    const seed = crypto.randomBytes(32);
+    const [verifierState, _verifierStateBump] = (
+      anchor.web3.PublicKey.findProgramAddressSync(
+        [seed],
+        program.programId,
+      ));
+
     const configureTx = await program.methods
-      .configure(amount, eligibilityStart, eligibilityEnd)
+      .configure(seed, amount, eligibilityStart, eligibilityEnd)
       .accounts({
         payer: provider.publicKey,
-        state: stateKeypair.publicKey,
+        state: verifierState,
         governance,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([stateKeypair])
       .rpc({ skipPreflight: true });
 
     console.log('Configure signature', configureTx);
@@ -54,7 +61,7 @@ describe('anchor_verifier', () => {
     const [receipt, _receiptBump] = anchor.web3.PublicKey.findProgramAddressSync(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode('Receipt')),
-        stateKeypair.publicKey.toBuffer(),
+        verifierState.toBuffer(),
         voteRecord.toBuffer(),
       ],
       program.programId,
@@ -64,7 +71,7 @@ describe('anchor_verifier', () => {
         .verify(amount, Buffer.alloc(0))
         .accounts({
           authority: provider.publicKey,
-          verifierState: stateKeypair.publicKey,
+          verifierState,
           recipient: recipientTokenAccount,
           governance,
           proposal,
@@ -81,17 +88,21 @@ describe('anchor_verifier', () => {
   });
 
   it('Fail not in time range', async () => {
-    const stateKeypair = anchor.web3.Keypair.generate();
+    const seed = crypto.randomBytes(32);
+    const [verifierState, _verifierStateBump] = (
+      anchor.web3.PublicKey.findProgramAddressSync(
+        [seed],
+        program.programId,
+      ));
 
     const configureTx = await program.methods
-      .configure(amount, eligibilityStart, eligibilityStart)
+      .configure(seed, amount, eligibilityStart, eligibilityStart)
       .accounts({
         payer: provider.publicKey,
-        state: stateKeypair.publicKey,
+        state: verifierState,
         governance,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([stateKeypair])
       .rpc({ skipPreflight: true });
 
     console.log('Configure signature', configureTx);
@@ -100,7 +111,7 @@ describe('anchor_verifier', () => {
       const [receipt, _receiptBump] = anchor.web3.PublicKey.findProgramAddressSync(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('Receipt')),
-          stateKeypair.publicKey.toBuffer(),
+          verifierState.toBuffer(),
           voteRecord.toBuffer(),
         ],
         program.programId,
@@ -109,7 +120,7 @@ describe('anchor_verifier', () => {
         .verify(amount, Buffer.alloc(0))
         .accounts({
           authority: provider.publicKey,
-          verifierState: stateKeypair.publicKey,
+          verifierState,
           recipient: recipientTokenAccount,
           governance,
           proposal,
@@ -126,17 +137,21 @@ describe('anchor_verifier', () => {
   });
 
   it('Fail not wrong voter', async () => {
-    const stateKeypair = anchor.web3.Keypair.generate();
+    const seed = crypto.randomBytes(32);
+    const [verifierState, _verifierStateBump] = (
+      anchor.web3.PublicKey.findProgramAddressSync(
+        [seed],
+        program.programId,
+      ));
 
     const configureTx = await program.methods
-      .configure(amount, eligibilityStart, eligibilityEnd)
+      .configure(seed, amount, eligibilityStart, eligibilityEnd)
       .accounts({
         payer: provider.publicKey,
-        state: stateKeypair.publicKey,
+        state: verifierState,
         governance,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([stateKeypair])
       .rpc({ skipPreflight: true });
 
     console.log('Configure signature', configureTx);
@@ -150,7 +165,7 @@ describe('anchor_verifier', () => {
       const [receipt, _receiptBump] = anchor.web3.PublicKey.findProgramAddressSync(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('Receipt')),
-          stateKeypair.publicKey.toBuffer(),
+          verifierState.toBuffer(),
           voteRecord.toBuffer(),
         ],
         program.programId,
@@ -159,7 +174,7 @@ describe('anchor_verifier', () => {
         .verify(amount, Buffer.alloc(0))
         .accounts({
           authority: provider.publicKey,
-          verifierState: stateKeypair.publicKey,
+          verifierState,
           recipient: wrongRecipientTokenAccount,
           governance,
           proposal,
@@ -176,17 +191,21 @@ describe('anchor_verifier', () => {
   });
 
   it('Fail wrong amount', async () => {
-    const stateKeypair = anchor.web3.Keypair.generate();
+    const seed = crypto.randomBytes(32);
+    const [verifierState, _verifierStateBump] = (
+      anchor.web3.PublicKey.findProgramAddressSync(
+        [seed],
+        program.programId,
+      ));
 
     const configureTx = await program.methods
-      .configure(amount, eligibilityStart, eligibilityEnd)
+      .configure(seed, amount, eligibilityStart, eligibilityEnd)
       .accounts({
         payer: provider.publicKey,
-        state: stateKeypair.publicKey,
+        state: verifierState,
         governance,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([stateKeypair])
       .rpc({ skipPreflight: true });
 
     console.log('Configure signature', configureTx);
@@ -195,7 +214,7 @@ describe('anchor_verifier', () => {
       const [receipt, _receiptBump] = anchor.web3.PublicKey.findProgramAddressSync(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('Receipt')),
-          stateKeypair.publicKey.toBuffer(),
+          verifierState.toBuffer(),
           voteRecord.toBuffer(),
         ],
         program.programId,
@@ -204,7 +223,7 @@ describe('anchor_verifier', () => {
         .verify(new anchor.BN(1), Buffer.alloc(0))
         .accounts({
           authority: provider.publicKey,
-          verifierState: stateKeypair.publicKey,
+          verifierState,
           recipient: recipientTokenAccount,
           governance,
           proposal,
@@ -221,17 +240,21 @@ describe('anchor_verifier', () => {
   });
 
   it('Fail wrong governance', async () => {
-    const stateKeypair = anchor.web3.Keypair.generate();
+    const seed = crypto.randomBytes(32);
+    const [verifierState, _verifierStateBump] = (
+      anchor.web3.PublicKey.findProgramAddressSync(
+        [seed],
+        program.programId,
+      ));
 
     const configureTx = await program.methods
-      .configure(amount, eligibilityStart, eligibilityEnd)
+      .configure(seed, amount, eligibilityStart, eligibilityEnd)
       .accounts({
         payer: provider.publicKey,
-        state: stateKeypair.publicKey,
+        state: verifierState,
         governance,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([stateKeypair])
       .rpc({ skipPreflight: true });
 
     console.log('Configure signature', configureTx);
@@ -240,7 +263,7 @@ describe('anchor_verifier', () => {
       const [receipt, _receiptBump] = anchor.web3.PublicKey.findProgramAddressSync(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('Receipt')),
-          stateKeypair.publicKey.toBuffer(),
+          verifierState.toBuffer(),
           voteRecord.toBuffer(),
         ],
         program.programId,
@@ -249,7 +272,7 @@ describe('anchor_verifier', () => {
         .verify(new anchor.BN(1), Buffer.alloc(0))
         .accounts({
           authority: provider.publicKey,
-          verifierState: stateKeypair.publicKey,
+          verifierState,
           recipient: recipientTokenAccount,
           governance: proposal,
           proposal,

@@ -1,13 +1,15 @@
 use crate::*;
 
 #[derive(Accounts)]
-#[instruction(amount_per_voter: u64, eligibility_start: i64, eligibility_end: i64)]
+#[instruction(seed: [u8; 32], amount_per_voter: u64, eligibility_start: i64, eligibility_end: i64)]
 pub struct Configure<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
 
     #[account(
         init,
+        seeds = [&seed],
+        bump,
         space = 8 + std::mem::size_of::<VerifierState>(),
         payer = payer
     )]
@@ -21,6 +23,7 @@ pub struct Configure<'info> {
 
 pub fn handle_configure(
     ctx: Context<Configure>,
+    _seed: [u8; 64],
     amount_per_voter: u64,
     eligibility_start: i64,
     eligibility_end: i64,

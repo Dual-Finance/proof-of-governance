@@ -19,6 +19,10 @@ pub struct VerifierState {
     // Amount of tokens to give to each eligible recipient.
     pub amount_per_voter: u64,
 
+    // Airdrop that this verifier is assigned to and will use as a seed for
+    // signing in the claim.
+    pub airdrop_state: Pubkey,
+
     // Left available for future updates.
     pub unused_padding: [u8; 128],
 }

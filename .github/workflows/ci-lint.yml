@@ -39,4 +39,4 @@ jobs:
       - name: Install eslint
         run: yarn install
       - name: Run ESLint on test code
-        run: yarn run eslint  --ignore-path .gitignore  --ignore-path tests/utils/dual_airdrop_type.ts --ext .js,.ts,.tsx tests/*
+        run: yarn run eslint  --ignore-path .gitignore --ext .js,.ts,.tsx tests/*

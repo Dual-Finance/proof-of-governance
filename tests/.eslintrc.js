@@ -37,4 +37,5 @@ module.exports = {
       }
     ],
   },
+  "ignorePatterns": ["**/*_type.ts"],
 };

@@ -1,6 +1,6 @@
 use crate::*;
-
-use anchor_spl::token::TokenAccount;
+use anchor_spl::token::{Token, TokenAccount};
+use dual_airdrop::program::DualAirdrop as AirdropProgram;
 use more_asserts::{assert_ge, assert_le};
 use solana_program::pubkey::Pubkey;
 use spl_governance::state::governance::{get_governance_data, GovernanceV2};
@@ -12,8 +12,8 @@ use spl_governance::state::vote_record::{
 use std::str::FromStr;
 
 #[derive(Accounts)]
-#[instruction(amount: u64, _verification_data: Vec<u8>)]
-pub struct Verify<'info> {
+#[instruction(amount: u64)]
+pub struct Claim<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
 
@@ -21,6 +21,7 @@ pub struct Verify<'info> {
     pub verifier_state: Account<'info, VerifierState>,
 
     /// Recipient owner will be matched against the VoteRecordV2
+    #[account(mut)]
     pub recipient: Account<'info, TokenAccount>,
 
     /// CHECK: GovernanceV2 is not an anchor account so it has to be checked in the handler
@@ -41,10 +42,24 @@ pub struct Verify<'info> {
     )]
     pub receipt: Account<'info, Receipt>,
 
+    #[account(seeds = [&airdrop_state.key().to_bytes()], bump)]
+    /// CHECK: Checked in the CPI
+    pub cpi_authority: UncheckedAccount<'info>,
+
+    #[account(constraint = airdrop_state.key.as_ref() == verifier_state.airdrop_state.as_ref())]
+    /// CHECK: Checked in the CPI
+    pub airdrop_state: UncheckedAccount<'info>,
+    #[account(mut)]
+    pub vault: Account<'info, TokenAccount>,
+    pub token_program: Program<'info, Token>,
+
+    /// Program which actually calls for the token transfer.
+    pub airdrop_program: Program<'info, AirdropProgram>,
+
     pub system_program: Program<'info, System>,
 }
 
-pub fn handle_verify(ctx: Context<Verify>, amount: u64, _verification_data: Vec<u8>) -> Result<()> {
+pub fn handle_claim(ctx: Context<Claim>, amount: u64) -> Result<()> {
     let gov_key: Pubkey = Pubkey::from_str("GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw").unwrap();
 
     // Verify the amount requested is correct.
@@ -112,6 +127,28 @@ pub fn handle_verify(ctx: Context<Verify>, amount: u64, _verification_data: Vec<
 
     ctx.accounts.receipt.state = ctx.accounts.verifier_state.key();
     ctx.accounts.receipt.vote_record = ctx.accounts.vote_record.key();
+
+    // Call the CPI to claim
+    let claim_accounts = dual_airdrop::cpi::accounts::Claim {
+        authority: ctx.accounts.cpi_authority.to_account_info(),
+        state: ctx.accounts.airdrop_state.to_account_info(),
+        vault: ctx.accounts.vault.to_account_info(),
+        recipient: ctx.accounts.recipient.to_account_info(),
+        token_program: ctx.accounts.token_program.to_account_info(),
+    };
+    let cpi_program = ctx.accounts.airdrop_program.to_account_info();
+
+    dual_airdrop::cpi::claim(
+        CpiContext::new_with_signer(
+            cpi_program,
+            claim_accounts,
+            &[&[
+                &ctx.accounts.airdrop_state.key().to_bytes(),
+                &[*ctx.bumps.get("cpi_authority").unwrap()],
+            ]],
+        ),
+        amount,
+    )?;
 
     Ok(())
 }

@@ -1,5 +1,5 @@
+pub use claim::*;
 pub use configure::*;
-pub use verify::*;
 
+mod claim;
 mod configure;
-mod verify;

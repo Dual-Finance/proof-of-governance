@@ -15,6 +15,9 @@ pub struct Configure<'info> {
     )]
     pub state: Account<'info, VerifierState>,
 
+    /// CHECK: Only saved for matching later
+    pub airdrop_state: UncheckedAccount<'info>,
+
     /// CHECK: Not an anchor account, so cannot be verified.
     pub governance: UncheckedAccount<'info>,
 
@@ -32,6 +35,7 @@ pub fn handle_configure(
     ctx.accounts.state.eligibility_end = eligibility_end;
     ctx.accounts.state.governance = ctx.accounts.governance.key();
     ctx.accounts.state.amount_per_voter = amount_per_voter;
+    ctx.accounts.state.airdrop_state = ctx.accounts.airdrop_state.key();
 
     Ok(())
 }

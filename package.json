@@ -1,7 +1,7 @@
 {
     "scripts": {
-        "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
-        "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check"
+        "lint:fix": "yarn run eslint  --ignore-path .gitignore --ext .js,.ts,.tsx tests/* --fix",
+        "lint": "yarn run eslint  --ignore-path .gitignore --ext .js,.ts,.tsx tests/*"
     },
     "dependencies": {
         "@coral-xyz/anchor": "^0.26.0",

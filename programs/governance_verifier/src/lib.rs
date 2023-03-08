@@ -30,8 +30,7 @@ pub mod governance_verifier {
         )
     }
 
-    /// The verifier knowing which governance and what proposal to verify.
-    pub fn verify(ctx: Context<Verify>, amount: u64, verification_data: Vec<u8>) -> Result<()> {
-        handle_verify(ctx, amount, verification_data)
+    pub fn claim(ctx: Context<Claim>, amount: u64) -> Result<()> {
+        handle_claim(ctx, amount)
     }
 }

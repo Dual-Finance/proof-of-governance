@@ -107,7 +107,7 @@ describe('governance_verifier', () => {
     );
     try {
       await governanceVerifier.methods
-        .claim(amount)
+        .claim()
         .accounts({
           authority: provider.publicKey,
           verifierState,

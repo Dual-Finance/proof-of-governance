@@ -30,7 +30,7 @@ pub mod governance_verifier {
         )
     }
 
-    pub fn claim(ctx: Context<Claim>, amount: u64) -> Result<()> {
-        handle_claim(ctx, amount)
+    pub fn claim(ctx: Context<Claim>) -> Result<()> {
+        handle_claim(ctx)
     }
 }

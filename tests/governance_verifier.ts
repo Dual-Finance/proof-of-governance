@@ -196,7 +196,7 @@ describe('governance_verifier', () => {
     );
     try {
       await governanceVerifier.methods
-        .claim(amount)
+        .claim()
         .accounts({
           authority: provider.publicKey,
           verifierState,
@@ -285,96 +285,7 @@ describe('governance_verifier', () => {
     );
     try {
       await governanceVerifier.methods
-        .claim(amount)
-        .accounts({
-          authority: provider.publicKey,
-          verifierState,
-          recipient: recipientTokenAccount,
-          governance,
-          proposal,
-          voteRecord,
-          receipt,
-          cpiAuthority: verifierSignature,
-          airdropState: governanceAirdropState,
-          vault: governanceAirdropVault,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          airdropProgram: airdropProgram.programId,
-          systemProgram: anchor.web3.SystemProgram.programId,
-        })
-        .rpc({ skipPreflight: true });
-      assert(false);
-    } catch (err) {
-      assert(true);
-    }
-  });
-
-  it('Fail wrong amount', async () => {
-    const governanceAirdropSeed = crypto.randomBytes(32);
-    const [governanceAirdropState, _stateBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [governanceAirdropSeed],
-      airdropProgram.programId,
-    );
-    const [governanceAirdropVault, _bump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode('Vault')),
-        governanceAirdropState.toBuffer(),
-      ],
-      airdropProgram.programId,
-    );
-    const [verifierSignature, _signatureBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [governanceAirdropState.toBuffer()],
-      governanceVerifier.programId,
-    );
-
-    const governanceVerifierSeed = crypto.randomBytes(32);
-    const [verifierState, _verifierStateBump] = (
-      anchor.web3.PublicKey.findProgramAddressSync(
-        [governanceVerifierSeed],
-        governanceVerifier.programId,
-      ));
-
-    await governanceVerifier.methods
-      .configure(governanceVerifierSeed, amount, eligibilityStart, eligibilityEnd)
-      .accounts({
-        payer: provider.publicKey,
-        state: verifierState,
-        airdropState: governanceAirdropState,
-        governance,
-        systemProgram: anchor.web3.SystemProgram.programId,
-      })
-      .rpc({ skipPreflight: true });
-
-    const mint = await createMint(provider, provider.publicKey);
-
-    await airdropProgram.methods.configure(
-      governanceAirdropSeed,
-    )
-      .accounts({
-        payer: provider.publicKey,
-        state: governanceAirdropState,
-        vault: governanceAirdropVault,
-        mint,
-        verifierSignature,
-        tokenProgram: TOKEN_PROGRAM_ID,
-        systemProgram: anchor.web3.SystemProgram.programId,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-      })
-      .rpc({ skipPreflight: true });
-
-    const recipientTokenAccount = await createTokenAccount(provider, mint, recipient);
-    await mintToAccount(provider, mint, governanceAirdropVault, airdropAmount, provider.publicKey);
-
-    const [receipt, _receiptBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode('Receipt')),
-        verifierState.toBuffer(),
-        voteRecord.toBuffer(),
-      ],
-      governanceVerifier.programId,
-    );
-    try {
-      await governanceVerifier.methods
-        .claim(new anchor.BN(123_456_789))
+        .claim()
         .accounts({
           authority: provider.publicKey,
           verifierState,
@@ -463,7 +374,7 @@ describe('governance_verifier', () => {
     );
     try {
       await governanceVerifier.methods
-        .claim(amount)
+        .claim()
         .accounts({
           authority: provider.publicKey,
           verifierState,

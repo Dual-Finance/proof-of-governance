@@ -12,7 +12,7 @@ use spl_governance::state::vote_record::{
 use std::str::FromStr;
 
 #[derive(Accounts)]
-#[instruction(amount: u64)]
+#[instruction()]
 pub struct Claim<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -59,11 +59,8 @@ pub struct Claim<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn handle_claim(ctx: Context<Claim>, amount: u64) -> Result<()> {
+pub fn handle_claim(ctx: Context<Claim>) -> Result<()> {
     let gov_key: Pubkey = Pubkey::from_str("GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw").unwrap();
-
-    // Verify the amount requested is correct.
-    assert_eq!(amount, ctx.accounts.verifier_state.amount_per_voter);
 
     let proposal: ProposalV2 = get_proposal_data_for_governance(
         &gov_key,
@@ -147,7 +144,7 @@ pub fn handle_claim(ctx: Context<Claim>, amount: u64) -> Result<()> {
                 &[*ctx.bumps.get("cpi_authority").unwrap()],
             ]],
         ),
-        amount,
+        ctx.accounts.verifier_state.amount_per_voter,
     )?;
 
     Ok(())

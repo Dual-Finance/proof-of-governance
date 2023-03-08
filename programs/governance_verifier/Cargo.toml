@@ -16,7 +16,7 @@ cpi = ["no-entrypoint"]
 default = []
 
 [dependencies]
-sol-airdrop = { version = "0.2.0", features = [ "no-entrypoint", "cpi"] }
+dual-airdrop = { version = "0.0.3", features = [ "no-entrypoint", "cpi"] }
 anchor-lang = { version = "0.26.0" }
 anchor-spl = "0.26.0"
 more-asserts = "0.3.1"

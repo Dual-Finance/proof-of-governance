@@ -4,8 +4,8 @@ import { TOKEN_PROGRAM_ID } from '@project-serum/serum/lib/token-instructions';
 import { PublicKey } from '@solana/web3.js';
 import assert from 'assert';
 import { GovernanceVerifier } from '../target/types/governance_verifier';
-import { SolAirdrop } from './utils/sol_airdrop_type';
-import solAirdropIdl from './utils/sol_airdrop.json';
+import { DualAirdrop } from './utils/dual_airdrop_type';
+import dualAirdropIdl from './utils/dual_airdrop.json';
 import { createMint, createTokenAccount, mintToAccount } from './utils/utils';
 
 const crypto = require('crypto');
@@ -13,14 +13,14 @@ const crypto = require('crypto');
 describe('governance_verifier', () => {
   anchor.setProvider(anchor.AnchorProvider.env());
 
-  const AIRDROP_PK: PublicKey = new PublicKey('tXmC2ARKqzPoX6wQAVmDj25XAQUN6JQe8iz19QR5Lo3');
+  const DUAL_AIRDROP_PK: PublicKey = new PublicKey('2fJcpdR6qzqDP7fBqvoJQ5PGYdaRFBNyUKZkZf5t12mr');
 
   const provider: Provider = anchor.AnchorProvider.env();
   const airdropProgram = new Program(
-    solAirdropIdl as Idl,
-    AIRDROP_PK,
+    dualAirdropIdl as Idl,
+    DUAL_AIRDROP_PK,
     provider,
-  ) as Program<SolAirdrop>;
+  ) as Program<DualAirdrop>;
   const governanceVerifier = anchor.workspace
     .GovernanceVerifier as Program<GovernanceVerifier>;
   const amount = new anchor.BN(1_000_000);

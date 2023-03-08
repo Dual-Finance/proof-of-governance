@@ -1,7 +1,7 @@
 use crate::*;
 use anchor_spl::token::{Token, TokenAccount};
 use more_asserts::{assert_ge, assert_le};
-use sol_airdrop::program::SolAirdrop as AirdropProgram;
+use dual_airdrop::program::DualAirdrop as AirdropProgram;
 use solana_program::pubkey::Pubkey;
 use spl_governance::state::governance::{get_governance_data, GovernanceV2};
 use spl_governance::state::proposal::{get_proposal_data_for_governance, ProposalV2};
@@ -129,7 +129,7 @@ pub fn handle_claim(ctx: Context<Claim>, amount: u64) -> Result<()> {
     ctx.accounts.receipt.vote_record = ctx.accounts.vote_record.key();
 
     // Call the CPI to claim
-    let claim_accounts = sol_airdrop::cpi::accounts::Claim {
+    let claim_accounts = dual_airdrop::cpi::accounts::Claim {
         authority: ctx.accounts.cpi_authority.to_account_info(),
         state: ctx.accounts.airdrop_state.to_account_info(),
         vault: ctx.accounts.vault.to_account_info(),
@@ -138,7 +138,7 @@ pub fn handle_claim(ctx: Context<Claim>, amount: u64) -> Result<()> {
     };
     let cpi_program = ctx.accounts.airdrop_program.to_account_info();
 
-    sol_airdrop::cpi::claim(
+    dual_airdrop::cpi::claim(
         CpiContext::new_with_signer(
             cpi_program,
             claim_accounts,

@@ -14,11 +14,11 @@ test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 [test.validator]
 url = "https://api.devnet.solana.com"
 
-# Airdrop Program
+# dual-airdrop Program
 [[test.validator.clone]]
-address = "tXmC2ARKqzPoX6wQAVmDj25XAQUN6JQe8iz19QR5Lo3"
+address = "2fJcpdR6qzqDP7fBqvoJQ5PGYdaRFBNyUKZkZf5t12mr"
 [[test.validator.clone]]
-address = "9MrsTQ1FG2ZhXypZvhwSZ3GKuhQU21CuHxXWpTs2KRLQ"
+address = "DirV1JrNn96XAmA7jwLZJ8EiomwLTprYkPdxZj8CLd1r"
 
 # Governance Program
 [[test.validator.clone]]

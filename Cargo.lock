@@ -781,6 +781,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "dual-airdrop"
+version = "0.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "910a0146ad9ff9a6cd258420c6699e47e69c2760d700ef61540a6e0d0f3e529b"
+dependencies = [
+ "anchor-lang",
+ "anchor-spl",
+ "solana-program",
+]
+
+[[package]]
 name = "ed25519"
 version = "1.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -889,8 +900,8 @@ version = "0.1.0"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
+ "dual-airdrop",
  "more-asserts",
- "sol-airdrop",
  "solana-program",
  "spl-governance",
 ]
@@ -1744,17 +1755,6 @@ name = "smallvec"
 version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
-
-[[package]]
-name = "sol-airdrop"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89406295930c3a847c78a6ad5b3ab2ef1be6cad1327c0dcbefaa3e760bdb33ca"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "solana-program",
-]
 
 [[package]]
 name = "solana-frozen-abi"

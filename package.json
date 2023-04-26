@@ -8,7 +8,7 @@
         "@project-serum/anchor": "^0.26.0",
         "@project-serum/serum": "^0.13.65",
         "@solana/web3.js": "^1.74.0",
-        "eslint": "^8.36.0"
+        "eslint": "^8.39.0"
     },
     "devDependencies": {
         "@types/bn.js": "^5.1.0",
